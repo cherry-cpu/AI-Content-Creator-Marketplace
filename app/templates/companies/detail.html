@@ -3,7 +3,7 @@
 {% block title %}{{ company.company_name }} — Brand Profile{% endblock %}
 
 {% block content %}
-<div class="bg-card border-bottom py-5">
+<div class="page-header py-5">
     <div class="container">
         <div class="row justify-content-between align-items-center gy-3">
             <div class="col-md-8">
@@ -17,7 +17,7 @@
                 <div class="text-secondary small d-flex flex-wrap gap-3">
                     <span><i class="bi bi-geo-alt me-1"></i>{{ company.location or 'Global' }}</span>
                     {% if company.website %}
-                    <span><i class="bi bi-globe me-1"></i><a href="{{ company.website }}" target="_blank" class="text-decoration-none text-primary">{{ company.website }}</a></span>
+                    <span><i class="bi bi-globe me-1"></i><a href="{{ company.website }}" target="_blank" rel="noopener" class="text-decoration-none text-primary">{{ company.website }}</a></span>
                     {% endif %}
                 </div>
             </div>
@@ -29,7 +29,7 @@
     </div>
 </div>
 
-<div class="container py-5">
+<div class="container py-4 py-lg-5">
     <div class="row g-4">
         <!-- Sidebar -->
         <div class="col-lg-4">
@@ -39,13 +39,13 @@
                     {{ company.description or 'No company description provided.' }}
                 </p>
                 {% if company.tags %}
-                <div class="d-flex flex-wrap gap-1 mb-3">
+                <div class="chip-row mb-3">
                     {% for tag in company.tags.split(',') %}
                     <span class="badge-tool">{{ tag.strip() }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
-                
+
                 <div class="p-3 bg-success-subtle rounded-3 small border border-success-subtle mt-3">
                     <span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Creator Profile Check Active</span>
                     <p class="text-secondary small mb-0 mt-1">Viewing this profile has been logged in the marketplace database.</p>
@@ -77,24 +77,24 @@
 
         <!-- Main Content: Open Briefs -->
         <div class="col-lg-8">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
                 <h4 class="fw-bold mb-0">Creative Briefs by {{ company.company_name }}</h4>
-                <span class="badge bg-secondary-subtle text-secondary">{{ company.jobs|length }} Open</span>
+                <span class="badge bg-secondary-subtle text-secondary text-nowrap">{{ company.jobs|length }} Open</span>
             </div>
 
             {% if company.jobs %}
             <div class="row g-3">
                 {% for job in company.jobs %}
                 <div class="col-12">
-                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-card">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="card p-4 border-0 shadow-sm rounded-4 bg-card hover-lift">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2 mb-2">
                             <div>
                                 <span class="badge bg-success-subtle text-success me-1">{{ job.content_type }}</span>
                                 <span class="badge bg-secondary-subtle text-secondary">{{ job.aspect_ratio or '16:9' }}</span>
                                 <h5 class="fw-bold mt-2 mb-1">{{ job.title }}</h5>
                             </div>
                             {% if job.budget_range %}
-                            <span class="badge bg-primary fs-6">{{ job.budget_range }}</span>
+                            <span class="badge bg-primary fs-6 text-nowrap">{{ job.budget_range }}</span>
                             {% endif %}
                         </div>
                         <p class="text-secondary small mb-3">{{ job.description[:140] }}...</p>
@@ -107,7 +107,8 @@
                 {% endfor %}
             </div>
             {% else %}
-            <div class="card p-4 text-center border-0 shadow-sm rounded-4 bg-card">
+            <div class="empty-state">
+                <div class="empty-icon"><i class="bi bi-briefcase"></i></div>
                 <p class="text-muted small mb-0">No active briefs published at the moment.</p>
             </div>
             {% endif %}

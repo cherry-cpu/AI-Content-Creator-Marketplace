@@ -3,17 +3,22 @@
 {% block title %}Discover AI Creators — Synapse Marketplace{% endblock %}
 
 {% block content %}
-<div class="bg-card border-bottom py-4 mb-4">
+<div class="page-header">
     <div class="container">
+        <span class="eyebrow">Talent Discovery</span>
         <h2 class="fw-bold mb-1">Discover AI Content Creators</h2>
         <p class="text-secondary mb-0">Search and filter top generative filmmakers, animators, and prompt engineers.</p>
     </div>
 </div>
 
-<div class="container pb-5">
+<div class="container py-4 py-lg-5">
     <div class="row g-4">
         <!-- Sidebar Filters -->
         <div class="col-lg-3">
+            <button class="btn btn-outline-primary w-100 mb-2 filter-toggle-btn justify-content-center"
+                    type="button" data-filter-toggle="#creatorFilters" aria-controls="creatorFilters" aria-expanded="false">
+                <i class="bi bi-funnel me-1"></i> Filters
+            </button>
             <div class="filter-panel shadow-sm">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-bold mb-0"><i class="bi bi-funnel me-1"></i> Filters</h5>
@@ -22,13 +27,14 @@
                     {% endif %}
                 </div>
 
+                <div id="creatorFilters" class="filter-collapse filter-collapsed">
                 <form action="/creators" method="GET" id="creatorFilterForm">
                     <!-- Text Search -->
                     <div class="mb-3">
                         <label class="form-label filter-group-title">Keyword Search</label>
                         <div class="input-group">
                             <input type="text" name="query" class="form-control form-control-sm" placeholder="e.g. cinematic, Runway..." value="{{ active_filters.get('query', '') }}">
-                            <button class="btn btn-outline-secondary btn-sm" type="submit"><i class="bi bi-search"></i></button>
+                            <button class="btn btn-outline-primary btn-sm" type="submit"><i class="bi bi-search"></i></button>
                         </div>
                     </div>
 
@@ -48,7 +54,7 @@
                     <div class="mb-3">
                         <label class="form-label filter-group-title">AI Tool / Model</label>
                         <select name="tool" class="form-select form-select-sm" onchange="this.form.submit()">
-                            <option value="">All Tools & Models</option>
+                            <option value="">All Tools &amp; Models</option>
                             <option value="Runway" {% if active_filters.get('tool') == 'Runway' %}selected{% endif %}>Runway (Gen-3)</option>
                             <option value="Midjourney" {% if active_filters.get('tool') == 'Midjourney' %}selected{% endif %}>Midjourney (v6)</option>
                             <option value="Kling" {% if active_filters.get('tool') == 'Kling' %}selected{% endif %}>Kling AI</option>
@@ -84,6 +90,7 @@
 
                     <button type="submit" class="btn btn-primary btn-sm w-100">Apply Filters</button>
                 </form>
+                </div>
             </div>
         </div>
 
@@ -95,7 +102,7 @@
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     <span class="small fw-bold text-secondary">Active filters:</span>
                     {% for k, v in active_filters.items() %}
-                    <span class="badge bg-dark text-light border p-2 d-inline-flex align-items-center gap-2">
+                    <span class="badge bg-light text-secondary border p-2 d-inline-flex align-items-center gap-2">
                         <span class="text-muted text-capitalize">{{ k }}:</span> <strong>{{ v }}</strong>
                     </span>
                     {% endfor %}
@@ -116,16 +123,16 @@
                 <div class="col-md-6">
                     <div class="card h-100 card-creator p-4 d-flex flex-column">
                         <div class="d-flex align-items-start gap-3 mb-3">
-                            <div class="position-relative">
-                                <img src="{{ creator.profile_image_url or 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160' }}" alt="{{ creator.display_name }}" class="creator-avatar" style="width: 64px; height: 64px;">
+                            <div class="position-relative flex-shrink-0">
+                                <img src="{{ creator.profile_image_url or 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160' }}" alt="{{ creator.display_name }}" class="creator-avatar" style="width: 64px; height: 64px;" loading="lazy">
                                 {% if creator.is_verified %}
-                                <span class="position-absolute bottom-0 start-50 translate-middle-x badge-verified" style="font-size: 0.65rem; padding: 2px 6px;">
+                                <span class="position-absolute bottom-0 start-50 translate-middle-x badge-verified" style="font-size: 0.62rem; padding: 2px 6px;">
                                     <i class="bi bi-patch-check-fill"></i> Verified
                                 </span>
                                 {% endif %}
                             </div>
-                            <div class="flex-grow-1">
-                                <h5 class="fw-bold mb-0 text-truncate" style="max-width: 220px;">{{ creator.display_name }}</h5>
+                            <div class="flex-grow-1 min-width-0">
+                                <h5 class="fw-bold mb-0 text-truncate">{{ creator.display_name }}</h5>
                                 <div class="text-primary small fw-semibold mb-1">{{ creator.specialization or 'AI Creator' }}</div>
                                 <div class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ creator.location or 'Remote' }}</div>
                             </div>
@@ -135,9 +142,9 @@
 
                         <!-- Verified Signals -->
                         {% if creator.verification_signals %}
-                        <div class="mb-3">
+                        <div class="mb-3 d-flex flex-wrap gap-1">
                             {% for sig in creator.verification_signals[:2] %}
-                            <span class="badge bg-success-subtle text-success border border-success-subtle me-1 mb-1 small">
+                            <span class="badge bg-success-subtle text-success border border-success-subtle small">
                                 <i class="bi bi-shield-check me-1"></i>{{ sig.badge_name }}
                             </span>
                             {% endfor %}
@@ -146,8 +153,8 @@
 
                         <!-- Tools & Models Chips -->
                         <div class="mb-3">
-                            <div class="small text-muted mb-1">Tools & Models:</div>
-                            <div class="d-flex flex-wrap gap-1">
+                            <div class="small text-muted mb-1">Tools &amp; Models:</div>
+                            <div class="chip-row">
                                 {% if creator.tools_models %}
                                     {% for tool in creator.tools_models.split(',')[:4] %}
                                     <span class="badge-tool">{{ tool.strip() }}</span>
@@ -169,12 +176,10 @@
             </div>
             {% else %}
             <!-- Empty Results State -->
-            <div class="card p-5 text-center border-0 shadow-sm rounded-4 bg-card">
-                <div class="badge bg-dark text-muted p-3 rounded-circle fs-2 mx-auto mb-3" style="width: 70px; height: 70px;">
-                    <i class="bi bi-search"></i>
-                </div>
+            <div class="empty-state">
+                <div class="empty-icon"><i class="bi bi-search"></i></div>
                 <h4 class="fw-bold mb-2">No creators found</h4>
-                <p class="text-secondary small mb-4" style="max-width: 450px; margin: 0 auto;">
+                <p class="text-secondary small mx-auto mb-4" style="max-width: 450px;">
                     {{ message or 'We could not find any AI creators matching your current combination of filters. Try broadening your criteria.' }}
                 </p>
                 <div>

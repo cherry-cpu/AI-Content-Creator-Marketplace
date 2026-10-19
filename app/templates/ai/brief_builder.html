@@ -3,13 +3,13 @@
 {% block title %}AI Brief Builder — Synapse Marketplace{% endblock %}
 
 {% block content %}
-<div class="bg-dark text-white py-5 mb-4 border-bottom border-secondary border-opacity-25">
-    <div class="container text-center text-md-start">
+<div class="ai-panel rounded-0 mb-4" style="border-left: 0; border-right: 0; border-top: 0;">
+    <div class="container text-center text-md-start ai-panel-inner">
         <div class="badge bg-warning text-dark px-3 py-1 rounded-pill mb-2 fw-semibold">
             <i class="bi bi-stars me-1"></i> AI-Assisted Brief Generation
         </div>
-        <h1 class="fw-bold text-white mb-2">AI Creative Brief Builder</h1>
-        <p class="text-white-50 mb-0" style="max-width: 650px;">
+        <h1 class="fw-bold mb-2">AI Creative Brief Builder</h1>
+        <p class="text-secondary mb-0" style="max-width: 650px;">
             Convert a rough concept into a production-ready creative brief with required tools, aspect ratios, deliverables, and licensing. Powered by Groq LLM with deterministic fallback.
         </p>
     </div>
@@ -19,7 +19,7 @@
     <div class="row g-4">
         <!-- Input Column -->
         <div class="col-lg-5">
-            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white sticky-top" style="top: 80px;">
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white" style="position: sticky; top: 88px;">
                 <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Describe Your Concept</h5>
                 <form id="aiPromptForm" onsubmit="handleGenerateBrief(event)">
                     <div class="mb-3">
@@ -34,20 +34,20 @@
 
                     <div class="mb-4">
                         <label class="form-label small text-muted">Try sample prompts:</label>
-                        <div class="d-flex flex-column gap-1">
-                            <button type="button" class="btn btn-sm btn-light text-start text-truncate" onclick="setPrompt('High-energy 9:16 vertical video ad for an energy drink with fast cuts and bold 3D typography', 'Volt Energy')">
+                        <div class="d-flex flex-column gap-2">
+                            <button type="button" class="btn btn-sm btn-light text-start text-truncate border" onclick="setPrompt('High-energy 9:16 vertical video ad for an energy drink with fast cuts and bold 3D typography', 'Volt Energy')">
                                 <i class="bi bi-arrow-right-short text-primary"></i> 9:16 Energy Drink Social Hook
                             </button>
-                            <button type="button" class="btn btn-sm btn-light text-start text-truncate" onclick="setPrompt('Cinematic 16:9 commercial trailer for a cyberpunk luxury electric vehicle with volumetric fog and photoreal lighting', 'Aether Motors')">
+                            <button type="button" class="btn btn-sm btn-light text-start text-truncate border" onclick="setPrompt('Cinematic 16:9 commercial trailer for a cyberpunk luxury electric vehicle with volumetric fog and photoreal lighting', 'Aether Motors')">
                                 <i class="bi bi-arrow-right-short text-primary"></i> 16:9 Luxury EV Reveal Commercial
                             </button>
-                            <button type="button" class="btn btn-sm btn-light text-start text-truncate" onclick="setPrompt('Studio product photography series with liquid water refractions and botanical elements for high-end perfume', 'Luxe Botanica')">
+                            <button type="button" class="btn btn-sm btn-light text-start text-truncate border" onclick="setPrompt('Studio product photography series with liquid water refractions and botanical elements for high-end perfume', 'Luxe Botanica')">
                                 <i class="bi bi-arrow-right-short text-primary"></i> 1:1 Luxury Perfume Key Visuals
                             </button>
                         </div>
                     </div>
 
-                    <button type="submit" id="generateBriefBtn" class="btn btn-warning w-100 py-2 fw-bold text-dark shadow-sm">
+                    <button type="submit" id="generateBriefBtn" class="btn btn-primary w-100 py-2 fw-semibold">
                         <i class="bi bi-stars me-1"></i> Generate Structured Brief
                     </button>
                 </form>
@@ -59,14 +59,14 @@
             <div id="aiOutputPlaceholder" class="card p-5 text-center border-0 shadow-sm rounded-4 bg-white">
                 <i class="bi bi-magic text-warning fs-1 mb-2"></i>
                 <h4 class="fw-bold mb-2">Structured Brief Assistant</h4>
-                <p class="text-secondary small mb-0" style="max-width: 420px; margin: 0 auto;">
+                <p class="text-secondary small mb-0 mx-auto" style="max-width: 420px;">
                     Type your rough creative idea on the left and click "Generate". The assistant will populate technical specs, tool suggestions, and commercial requirements for you to review and edit.
                 </p>
             </div>
 
             <!-- Result Card (Hidden until generated) -->
             <div id="aiResultCard" class="card p-4 p-md-5 border-0 shadow-sm rounded-4 bg-white d-none">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                     <span id="aiSourceBadge" class="badge bg-success-subtle text-success border border-success-subtle">
                         <i class="bi bi-check-circle me-1"></i> Generated Draft
                     </span>
@@ -75,11 +75,11 @@
 
                 <form id="saveBriefForm" onsubmit="handleSaveAIBrief(event)">
                     <div class="row g-3">
-                        <div class="col-md-8">
+                        <div class="col-12 col-md-8">
                             <label class="form-label small fw-semibold">Title</label>
                             <input type="text" class="form-control" id="resTitle" required>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <label class="form-label small fw-semibold">Content Type</label>
                             <select class="form-select" id="resContentType">
                                 <option value="Video">Video</option>
@@ -99,15 +99,15 @@
                             <textarea class="form-control" id="resRequirements" rows="3"></textarea>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <label class="form-label small fw-semibold">Aspect Ratio</label>
                             <input type="text" class="form-control" id="resAspectRatio">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <label class="form-label small fw-semibold">Style</label>
                             <input type="text" class="form-control" id="resStyle">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <label class="form-label small fw-semibold">Format</label>
                             <input type="text" class="form-control" id="resFormat">
                         </div>
@@ -136,12 +136,12 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                    <div class="mt-4 pt-3 border-top d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
                         <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyBriefAsJson()">
                             <i class="bi bi-clipboard me-1"></i> Copy JSON
                         </button>
                         <button type="submit" id="saveBriefBtn" class="btn btn-primary px-4">
-                            <i class="bi bi-cloud-check me-1"></i> Save & Publish Brief
+                            <i class="bi bi-cloud-check me-1"></i> Save &amp; Publish Brief
                         </button>
                     </div>
                 </form>

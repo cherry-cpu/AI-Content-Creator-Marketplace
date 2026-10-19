@@ -3,301 +3,332 @@
 {% block title %}Creator Studio Dashboard — Synapse{% endblock %}
 
 {% block content %}
-<div class="bg-card border-bottom py-4 mb-4">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-        <div>
-            <span class="badge bg-primary-subtle text-primary mb-1">Creator Studio</span>
-            <h2 class="fw-bold mb-0">Welcome back, {{ profile.display_name }}</h2>
+<div class="studio-hero">
+    <div class="container">
+        <div class="studio-top">
+            <div>
+                <span class="studio-eyebrow"><i class="bi bi-person-badge"></i> Creator Studio</span>
+                <h1 class="studio-title">Welcome back, {{ profile.display_name }}</h1>
+                <div class="studio-meta">
+                    <span><i class="bi bi-brush"></i>{{ profile.specialization or 'AI Creative Specialist' }}</span>
+                    <span><i class="bi bi-geo-alt"></i>{{ profile.location or 'Global / Remote' }}</span>
+                    <span><i class="bi bi-collection-play"></i>{{ portfolio_items|length }} portfolio works</span>
+                </div>
+            </div>
+            <div class="studio-actions">
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <i class="bi bi-pencil me-1"></i> Edit Profile
+                </button>
+                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                    <i class="bi bi-cloud-arrow-up me-1"></i> Add Portfolio Work
+                </button>
+            </div>
         </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                <i class="bi bi-pencil me-1"></i> Edit Profile
-            </button>
-            <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                <i class="bi bi-cloud-arrow-up me-1"></i> Add Portfolio Work
-            </button>
+
+        <div class="studio-kpis">
+            <div class="kpi">
+                <span class="kpi-icon tone-primary"><i class="bi bi-pie-chart-fill"></i></span>
+                <div class="kpi-body">
+                    <div class="kpi-label">Profile Completeness</div>
+                    <div class="kpi-value">{{ completeness }}%</div>
+                    <div class="progress mt-2 mb-2" style="height: 6px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ completeness }}%; background: var(--gradient-primary);" aria-valuenow="{{ completeness }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <p class="kpi-hint mb-0">A complete profile gets 3x more brand engagements.</p>
+                </div>
+            </div>
+
+            <div class="kpi">
+                <span class="kpi-icon tone-violet"><i class="bi bi-collection-play-fill"></i></span>
+                <div class="kpi-body">
+                    <div class="kpi-label">Total Portfolio Works</div>
+                    <div class="kpi-value">{{ portfolio_items|length }}</div>
+                    <p class="kpi-hint mb-0">Multi-format videos, images and loop animations.</p>
+                </div>
+            </div>
+
+            <div class="kpi">
+                <span class="kpi-icon tone-success"><i class="bi bi-inbox-fill"></i></span>
+                <div class="kpi-body">
+                    <div class="kpi-label">Incoming Proposals</div>
+                    <div class="kpi-value">{{ engagements|length }}</div>
+                    <p class="kpi-hint mb-0">Brands interested in hiring you for creative projects.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="container pb-5">
-    <!-- Top Stats Row -->
-    <div class="row g-4 mb-4">
-        <!-- Completeness -->
-        <div class="col-md-4">
-            <div class="card p-4 border-0 shadow-sm rounded-4 h-100">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small fw-bold text-muted text-uppercase">Profile Completeness</span>
-                    <span class="badge bg-primary">{{ completeness }}%</span>
-                </div>
-                <div class="progress mb-2" style="height: 8px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ completeness }}%"></div>
-                </div>
-                <p class="text-secondary small mb-0">
-                    A complete profile with rich workflow and tools gets 3x more brand engagements.
-                </p>
-            </div>
-        </div>
-
-        <!-- Portfolio Works Count -->
-        <div class="col-md-4">
-            <div class="card p-4 border-0 shadow-sm rounded-4 h-100">
-                <div class="small fw-bold text-muted text-uppercase mb-1">Total Portfolio Works</div>
-                <div class="fs-2 fw-bold text-dark mb-1">{{ portfolio_items|length }}</div>
-                <p class="text-secondary small mb-0">Showcase multi-format videos, images, and loop animations.</p>
-            </div>
-        </div>
-
-        <!-- Inbound Engagements -->
-        <div class="col-md-4">
-            <div class="card p-4 border-0 shadow-sm rounded-4 h-100">
-                <div class="small fw-bold text-muted text-uppercase mb-1">Incoming Proposals</div>
-                <div class="fs-2 fw-bold text-primary mb-1">{{ engagements|length }}</div>
-                <p class="text-secondary small mb-0">Brands interested in hiring you for creative projects.</p>
-            </div>
-        </div>
-    </div>
-
+<div class="container studio-body">
     <!-- Checked Companies Section (Feature: Creator checks company profiles) -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="panel">
+        <div class="panel-head">
             <div>
-                <h4 class="fw-bold mb-0"><i class="bi bi-buildings me-2 text-primary"></i>Companies & Brands You've Checked</h4>
-                <p class="text-secondary small mb-0">Track company profiles, brand briefs, and creative opportunities you have explored.</p>
+                <h4 class="panel-title"><i class="bi bi-buildings"></i>Companies & Brands You've Checked</h4>
+                <p class="panel-sub">Track company profiles, brand briefs, and creative opportunities you have explored.</p>
             </div>
-            <a href="/companies" class="btn btn-outline-primary btn-sm">
+            <a href="/companies" class="btn btn-outline-primary btn-sm text-nowrap">
                 <i class="bi bi-search me-1"></i> Browse Directory
             </a>
         </div>
-
-        {% if checked_companies %}
-        <div class="row g-3">
-            {% for company in checked_companies %}
-            <div class="col-md-6 col-lg-4">
-                <div class="p-3 border rounded-3 h-100 d-flex flex-column bg-light">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <h6 class="fw-bold mb-0 text-dark">{{ company.company_name }}</h6>
-                            <span class="badge bg-secondary-subtle text-secondary small">{{ company.industry or 'Brand' }}</span>
+        <div class="panel-body">
+            {% if checked_companies %}
+            <div class="row g-3">
+                {% for company in checked_companies %}
+                <div class="col-md-6 col-xl-4">
+                    <div class="mini-card">
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                            <h6 class="mini-title">{{ company.company_name }}</h6>
+                            <span class="badge bg-primary-subtle text-primary text-nowrap">
+                                <i class="bi bi-eye me-1"></i>{{ company.views_count }} views
+                            </span>
                         </div>
-                        <span class="badge bg-primary-subtle text-primary small">
-                            <i class="bi bi-eye me-1"></i>{{ company.views_count }} views
-                        </span>
-                    </div>
-                    <p class="text-secondary small mb-3 flex-grow-1">
-                        {{ company.description[:80] if company.description else 'Verified commercial brand on Synapse.' }}...
-                    </p>
-                    <div class="pt-2 border-top d-flex justify-content-between align-items-center mt-auto">
-                        <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ company.location or 'Global' }}</span>
-                        <a href="/companies/{{ company.id }}" class="btn btn-outline-primary btn-sm py-1 px-3">
-                            Check Profile
-                        </a>
+                        <span class="badge bg-secondary-subtle text-secondary align-self-start">{{ company.industry or 'Brand' }}</span>
+                        <p class="mini-text">{{ company.description[:80] if company.description else 'Verified commercial brand on Synapse.' }}...</p>
+                        <div class="mini-foot">
+                            <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ company.location or 'Global' }}</span>
+                            <a href="/companies/{{ company.id }}" class="btn btn-outline-primary btn-sm py-1 px-3">
+                                Check Profile
+                            </a>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <div class="panel-empty">
+                <div class="panel-empty-icon"><i class="bi bi-buildings"></i></div>
+                <h6>You haven't checked any brand profiles yet</h6>
+                <p>Explore the directory to see brand briefs, budgets and creative opportunities.</p>
+                <a href="/companies" class="btn btn-primary btn-sm">Discover Brands &amp; Briefs</a>
+            </div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="text-center py-4">
-            <i class="bi bi-buildings text-muted fs-3 mb-2"></i>
-            <p class="text-secondary small mb-2">You haven't checked any brand profiles yet.</p>
-            <a href="/companies" class="btn btn-primary btn-sm">Discover Brands & Briefs</a>
-        </div>
-        {% endif %}
     </div>
 
     <!-- Incoming Proposals Section -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-        <h4 class="fw-bold mb-3"><i class="bi bi-inbox me-2 text-primary"></i>Inbound Brand Proposals</h4>
+    <div class="panel">
+        <div class="panel-head">
+            <div>
+                <h4 class="panel-title"><i class="bi bi-inbox"></i>Inbound Brand Proposals</h4>
+                <p class="panel-sub">Accept a proposal to start the project, or decline to close it out.</p>
+            </div>
+            <span class="badge bg-light text-secondary border">{{ engagements|length }} total</span>
+        </div>
         {% if engagements %}
-        <div class="table-responsive">
-            <table class="table align-middle">
-                <thead>
-                    <tr class="text-secondary small">
-                        <th>Brand / Company</th>
-                        <th>Project Proposal</th>
-                        <th>Proposed Budget</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th class="text-end">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for eng in engagements %}
-                    <tr>
-                        <td>
-                            <strong class="text-dark">{{ eng.company.company_name if eng.company else 'Brand' }}</strong>
-                        </td>
-                        <td>
-                            <p class="small text-secondary mb-0" style="max-width: 320px;">{{ eng.message }}</p>
-                            {% if eng.job %}
-                            <a href="/projects/{{ eng.job_id }}" class="badge bg-light text-primary border text-decoration-none mt-1">
-                                Linked Brief: {{ eng.job.title }}
-                            </a>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <span class="badge bg-success-subtle text-success">{{ eng.proposed_budget or 'Negotiable' }}</span>
-                        </td>
-                        <td>
-                            <span class="badge {% if eng.status == 'accepted' %}bg-success{% elif eng.status == 'declined' %}bg-danger{% else %}bg-warning text-dark{% endif %} text-uppercase">
-                                {{ eng.status }}
-                            </span>
-                        </td>
-                        <td class="small text-muted">{{ eng.created_at.strftime('%b %d') }}</td>
-                        <td class="text-end">
-                            {% if eng.status == 'pending' %}
-                            <button class="btn btn-sm btn-outline-success me-1" onclick="updateEngagementStatus({{ eng.id }}, 'accepted')">Accept</button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="updateEngagementStatus({{ eng.id }}, 'declined')">Decline</button>
-                            {% else %}
-                            <span class="small text-muted">Completed</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="panel-body flush">
+            <div class="table-responsive">
+                <table class="table align-middle table-stackable">
+                    <thead>
+                        <tr class="text-secondary small">
+                            <th>Brand / Company</th>
+                            <th>Project Proposal</th>
+                            <th>Proposed Budget</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for eng in engagements %}
+                        <tr>
+                            <td data-label="Brand">
+                                <strong class="text-dark">{{ eng.company.company_name if eng.company else 'Brand' }}</strong>
+                            </td>
+                            <td data-label="Proposal">
+                                <p class="small text-secondary mb-0" style="max-width: 320px;">{{ eng.message }}</p>
+                                {% if eng.job %}
+                                <a href="/projects/{{ eng.job_id }}" class="badge bg-light text-primary border text-decoration-none mt-1">
+                                    Linked Brief: {{ eng.job.title }}
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td data-label="Budget">
+                                <span class="badge bg-success-subtle text-success">{{ eng.proposed_budget or 'Negotiable' }}</span>
+                            </td>
+                            <td data-label="Status">
+                                <span class="badge {% if eng.status == 'accepted' %}bg-success{% elif eng.status == 'declined' %}bg-danger{% else %}bg-warning text-dark{% endif %} text-uppercase">
+                                    {{ eng.status }}
+                                </span>
+                            </td>
+                            <td data-label="Date" class="small text-muted">{{ eng.created_at.strftime('%b %d') }}</td>
+                            <td data-label="Action" class="text-end">
+                                {% if eng.status == 'pending' %}
+                                <button class="btn btn-sm btn-outline-success me-1" onclick="updateEngagementStatus({{ eng.id }}, 'accepted')">Accept</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="updateEngagementStatus({{ eng.id }}, 'declined')">Decline</button>
+                                {% else %}
+                                <span class="small text-muted">Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% else %}
-        <div class="text-center py-4">
-            <i class="bi bi-envelope-open text-muted fs-3 mb-2"></i>
-            <p class="text-secondary small mb-0">No incoming proposals yet. Ensure your portfolio and skills are up to date to get discovered!</p>
+        <div class="panel-body">
+            <div class="panel-empty">
+                <div class="panel-empty-icon"><i class="bi bi-envelope-open"></i></div>
+                <h6>No incoming proposals yet</h6>
+                <p>Keep your portfolio and skills up to date to get discovered by brands.</p>
+            </div>
         </div>
         {% endif %}
     </div>
 
     <!-- Portfolio Management Section -->
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="fw-bold mb-0"><i class="bi bi-collection-play me-2 text-primary"></i>My Portfolio Works</h4>
-            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+    <div class="panel">
+        <div class="panel-head">
+            <div>
+                <h4 class="panel-title"><i class="bi bi-collection-play"></i>My Portfolio Works</h4>
+                <p class="panel-sub">Each work is shown on your public profile with its tools, skills and specs.</p>
+            </div>
+            <button class="btn btn-primary btn-sm text-nowrap" data-bs-toggle="modal" data-bs-target="#uploadModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Work
             </button>
         </div>
+        <div class="panel-body tight">
+            {% if portfolio_items %}
+            <div class="row g-3">
+                {% for item in portfolio_items %}
+                <div class="col-sm-6 col-xl-4">
+                    <div class="portfolio-card h-100 d-flex flex-column">
+                        <div class="work-tile">
+                            {% if item.mime_type.startswith('video') %}
+                            <video muted>
+                                <source src="{{ item.file_path }}">
+                            </video>
+                            {% else %}
+                            <img src="{{ item.file_path }}" alt="{{ item.title }}" loading="lazy">
+                            {% endif %}
+                            <span class="work-tag">{{ item.content_type }}</span>
+                        </div>
 
-        {% if portfolio_items %}
-        <div class="row g-4">
-            {% for item in portfolio_items %}
-            <div class="col-md-6 col-lg-4">
-                <div class="portfolio-card h-100 p-3 d-flex flex-column border">
-                    <div class="position-relative mb-2">
-                        {% if item.mime_type.startswith('video') %}
-                        <video class="w-100 rounded" style="height: 150px; object-fit: cover;" muted>
-                            <source src="{{ item.file_path }}">
-                        </video>
-                        {% else %}
-                        <img src="{{ item.file_path }}" alt="{{ item.title }}" class="w-100 rounded" style="height: 150px; object-fit: cover;">
-                        {% endif %}
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-dark bg-opacity-75">{{ item.content_type }}</span>
-                    </div>
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <h6 class="fw-bold mb-1">{{ item.title }}</h6>
+                            <p class="small text-secondary mb-2 flex-grow-1">{{ item.description[:70] if item.description else 'No description' }}...</p>
 
-                    <h6 class="fw-bold mb-1">{{ item.title }}</h6>
-                    <p class="small text-secondary mb-2 flex-grow-1">{{ item.description[:70] if item.description else 'No description' }}...</p>
-                    
-                    <div class="d-flex flex-wrap gap-1 mb-3">
-                        {% if item.aspect_ratio %}<span class="badge-aspect">{{ item.aspect_ratio }}</span>{% endif %}
-                        {% if item.format %}<span class="badge-aspect">{{ item.format }}</span>{% endif %}
-                    </div>
+                            <div class="chip-row mb-3">
+                                {% if item.aspect_ratio %}<span class="badge-aspect">{{ item.aspect_ratio }}</span>{% endif %}
+                                {% if item.format %}<span class="badge-aspect">{{ item.format }}</span>{% endif %}
+                            </div>
 
-                    <div class="pt-2 border-top d-flex justify-content-between align-items-center mt-auto">
-                        <button class="btn btn-sm btn-outline-primary" onclick="openMediaModal('{{ item.title }}', '{{ item.file_path }}', '{{ item.content_type }}', '{{ item.description|escape }}', '{{ item.format }}', '{{ item.aspect_ratio }}', '{{ item.tools_models }}', '{{ item.skills }}')">
-                            Preview
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deletePortfolioItem({{ item.id }})">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                            <div class="pt-2 border-top d-flex justify-content-between align-items-center mt-auto">
+                                <button class="btn btn-sm btn-outline-primary" onclick="openMediaModal('{{ item.title }}', '{{ item.file_path }}', '{{ item.content_type }}', '{{ item.description|escape }}', '{{ item.format }}', '{{ item.aspect_ratio }}', '{{ item.tools_models }}', '{{ item.skills }}')">
+                                    Preview
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deletePortfolioItem({{ item.id }})" aria-label="Delete portfolio item">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            {% else %}
+            <div class="panel-empty">
+                <div class="panel-empty-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                <h6>Your portfolio is empty</h6>
+                <p>Upload your AI-generated videos, animations and graphics to attract brand briefs.</p>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                    Upload Your First Work
+                </button>
+            </div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="text-center py-5">
-            <i class="bi bi-cloud-arrow-up text-muted fs-1 mb-2"></i>
-            <h5 class="fw-bold">Your portfolio is empty</h5>
-            <p class="text-secondary small mb-3">Upload your AI-generated videos, animations, and graphics to attract brand briefs.</p>
-            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                Upload Your First Work
-            </button>
-        </div>
-        {% endif %}
     </div>
 </div>
 
 <!-- Upload Portfolio Modal -->
 <div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Add AI Portfolio Work</h5>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content sheet">
+            <div class="modal-header sheet-head">
+                <span class="sheet-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                <div class="sheet-heading">
+                    <h5 class="modal-title">Add AI Portfolio Work</h5>
+                    <p class="sheet-sub">Upload the piece, tag the tools you used and set its specs. It appears on your public profile right away.</p>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="uploadWorkForm" onsubmit="handlePortfolioUpload(event)">
-                <div class="modal-body p-4">
-                    <div class="row g-3">
-                        <div class="col-md-8">
-                            <label class="form-label small fw-semibold">Work Title <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="title" required placeholder="e.g. Cyberpunk Cinematic Spec Commercial">
+                <div class="modal-body">
+                    <div class="form-block">
+                        <div class="form-block-title">The work</div>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-8">
+                                <label class="form-label">Work Title <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="title" required placeholder="e.g. Cyberpunk Cinematic Spec Commercial">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Content Type <span class="text-danger">*</span></label>
+                                <select class="form-select" name="content_type" required>
+                                    <option value="Video">AI Video</option>
+                                    <option value="Animation">AI Animation</option>
+                                    <option value="Image">AI Image / Key Visual</option>
+                                    <option value="Graphic">AI Graphic & Design</option>
+                                    <option value="3D">Generative 3D</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Media File <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" name="file" required accept=".mp4,.webm,.mov,.png,.jpg,.jpeg,.webp,.gif,.svg">
+                                <div class="form-text">Supports video (MP4, WebM, MOV) and images (PNG, JPG, SVG). Max 50MB.</div>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Content Type <span class="text-danger">*</span></label>
-                            <select class="form-select" name="content_type" required>
-                                <option value="Video">AI Video</option>
-                                <option value="Animation">AI Animation</option>
-                                <option value="Image">AI Image / Key Visual</option>
-                                <option value="Graphic">AI Graphic & Design</option>
-                                <option value="3D">Generative 3D</option>
-                            </select>
-                        </div>
+                    </div>
 
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Media File <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control" name="file" required accept=".mp4,.webm,.mov,.png,.jpg,.jpeg,.webp,.gif,.svg">
-                            <div class="form-text">Supports video (MP4, WebM, MOV) and images (PNG, JPG, SVG). Max 50MB.</div>
+                    <div class="form-block">
+                        <div class="form-block-title">Specifications</div>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Aspect Ratio</label>
+                                <select class="form-select" name="aspect_ratio">
+                                    <option value="16:9">16:9 (Landscape)</option>
+                                    <option value="9:16">9:16 (Vertical)</option>
+                                    <option value="1:1">1:1 (Square)</option>
+                                    <option value="4:5">4:5 (Portrait)</option>
+                                    <option value="21:9">21:9 (Cinemascope)</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Format</label>
+                                <input type="text" class="form-control" name="format" placeholder="e.g. MP4, PNG, 4K">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label">Specialization</label>
+                                <input type="text" class="form-control" name="specialization" placeholder="e.g. AI Video">
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Aspect Ratio</label>
-                            <select class="form-select" name="aspect_ratio">
-                                <option value="16:9">16:9 (Landscape)</option>
-                                <option value="9:16">9:16 (Vertical)</option>
-                                <option value="1:1">1:1 (Square)</option>
-                                <option value="4:5">4:5 (Portrait)</option>
-                                <option value="21:9">21:9 (Cinemascope)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Format</label>
-                            <input type="text" class="form-control" name="format" placeholder="e.g. MP4, PNG, 4K">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Specialization</label>
-                            <input type="text" class="form-control" name="specialization" placeholder="e.g. AI Video">
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">AI Tools & Models Used</label>
-                            <input type="text" class="form-control" name="tools_models" placeholder="Runway Gen-3, Midjourney v6, Topaz Video AI">
-                            <div class="form-text">Comma-separated tools/models used to generate this piece.</div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Skills</label>
-                            <input type="text" class="form-control" name="skills" placeholder="Prompt Engineering, Motion Design, Color Grading">
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Description</label>
-                            <textarea class="form-control" name="description" rows="2" placeholder="Brief description of the concept and creative objectives..."></textarea>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Workflow Details (Optional)</label>
-                            <textarea class="form-control" name="workflow" rows="2" placeholder="Describe the generation pipeline (e.g. prompt bible, upscaling technique)..."></textarea>
+                    <div class="form-block">
+                        <div class="form-block-title">Toolchain &amp; description</div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">AI Tools &amp; Models Used</label>
+                                <input type="text" class="form-control" name="tools_models" placeholder="Runway Gen-3, Midjourney v6, Topaz Video AI">
+                                <div class="form-text">Comma-separated tools/models used to generate this piece.</div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Skills</label>
+                                <input type="text" class="form-control" name="skills" placeholder="Prompt Engineering, Motion Design, Color Grading">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="2" placeholder="Brief description of the concept and creative objectives..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Workflow Details (Optional)</label>
+                                <textarea class="form-control" name="workflow" rows="2" placeholder="Describe the generation pipeline (e.g. prompt bible, upscaling technique)..."></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-0">
+                <div class="modal-footer sheet-foot">
+                    <span class="foot-note"><i class="bi bi-info-circle"></i> Required fields are marked with *</span>
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" id="uploadSubmitBtn" class="btn btn-primary px-4">Upload Work</button>
                 </div>
@@ -308,54 +339,74 @@
 
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Edit Creator Profile</h5>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content sheet">
+            <div class="modal-header sheet-head">
+                <span class="sheet-icon tone-violet"><i class="bi bi-person-gear"></i></span>
+                <div class="sheet-heading">
+                    <h5 class="modal-title">Edit Creator Profile</h5>
+                    <p class="sheet-sub">This information powers your public profile and how brands match you to briefs.</p>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="editProfileForm" onsubmit="handleProfileUpdate(event)">
-                <div class="modal-body p-4">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Display Name</label>
-                            <input type="text" class="form-control" id="profDisplayName" value="{{ profile.display_name }}" required>
+                <div class="modal-body">
+                    <div class="form-block">
+                        <div class="form-block-title">Identity</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Display Name</label>
+                                <input type="text" class="form-control" id="profDisplayName" value="{{ profile.display_name }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Specialization</label>
+                                <input type="text" class="form-control" id="profSpecialization" value="{{ profile.specialization or '' }}" placeholder="AI Video, Generative Advertising...">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Headline</label>
+                                <input type="text" class="form-control" id="profHeadline" value="{{ profile.headline or '' }}" placeholder="e.g. AI Commercial Filmmaker & Generative Director">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Biography</label>
+                                <textarea class="form-control" id="profBio" rows="3">{{ profile.bio or '' }}</textarea>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Specialization</label>
-                            <input type="text" class="form-control" id="profSpecialization" value="{{ profile.specialization or '' }}" placeholder="AI Video, Generative Advertising...">
+                    </div>
+
+                    <div class="form-block">
+                        <div class="form-block-title">Toolchain &amp; skills</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">AI Tools &amp; Models</label>
+                                <input type="text" class="form-control" id="profTools" value="{{ profile.tools_models or '' }}" placeholder="Runway Gen-3, Midjourney v6, Kling AI">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Skills</label>
+                                <input type="text" class="form-control" id="profSkills" value="{{ profile.skills or '' }}" placeholder="Prompt Engineering, Motion Design">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Generative Workflow</label>
+                                <textarea class="form-control" id="profWorkflow" rows="2" placeholder="Describe your creative approach and toolchain...">{{ profile.workflow or '' }}</textarea>
+                            </div>
                         </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Headline</label>
-                            <input type="text" class="form-control" id="profHeadline" value="{{ profile.headline or '' }}" placeholder="e.g. AI Commercial Filmmaker & Generative Director">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Biography</label>
-                            <textarea class="form-control" id="profBio" rows="3">{{ profile.bio or '' }}</textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">AI Tools & Models</label>
-                            <input type="text" class="form-control" id="profTools" value="{{ profile.tools_models or '' }}" placeholder="Runway Gen-3, Midjourney v6, Kling AI">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Skills</label>
-                            <input type="text" class="form-control" id="profSkills" value="{{ profile.skills or '' }}" placeholder="Prompt Engineering, Motion Design">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Generative Workflow</label>
-                            <textarea class="form-control" id="profWorkflow" rows="2" placeholder="Describe your creative approach and toolchain...">{{ profile.workflow or '' }}</textarea>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Experience Level</label>
-                            <input type="text" class="form-control" id="profExp" value="{{ profile.experience_level or '' }}" placeholder="Expert (5+ yrs commercial experience)">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Location / Availability</label>
-                            <input type="text" class="form-control" id="profLocation" value="{{ profile.location or '' }}" placeholder="London / Remote">
+                    </div>
+
+                    <div class="form-block">
+                        <div class="form-block-title">Availability</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Experience Level</label>
+                                <input type="text" class="form-control" id="profExp" value="{{ profile.experience_level or '' }}" placeholder="Expert (5+ yrs commercial experience)">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Location / Availability</label>
+                                <input type="text" class="form-control" id="profLocation" value="{{ profile.location or '' }}" placeholder="London / Remote">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-0">
+                <div class="modal-footer sheet-foot">
+                    <span class="foot-note"><i class="bi bi-patch-check"></i> Changes are visible on your public profile</span>
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" id="updateProfileBtn" class="btn btn-primary px-4">Save Profile</button>
                 </div>

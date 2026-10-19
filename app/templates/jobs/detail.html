@@ -3,7 +3,7 @@
 {% block title %}{{ job.title }} — Creative Brief{% endblock %}
 
 {% block content %}
-<div class="bg-white border-bottom py-5">
+<div class="page-header py-5">
     <div class="container">
         <div class="row justify-content-between align-items-start gy-3">
             <div class="col-lg-8">
@@ -33,27 +33,27 @@
     </div>
 </div>
 
-<div class="container py-5">
+<div class="container py-4 py-lg-5">
     <div class="row g-4">
         <!-- Main Brief Details -->
         <div class="col-lg-8">
             <div class="card p-4 p-md-5 border-0 shadow-sm rounded-4 mb-4 bg-white">
                 <h4 class="fw-bold mb-3">Project Overview</h4>
-                <p class="text-secondary mb-4" style="line-height: 1.7; white-space: pre-line;">
+                <p class="text-secondary mb-4" style="line-height: 1.75; white-space: pre-line;">
                     {{ job.description }}
                 </p>
 
                 {% if job.campaign_requirements %}
-                <h5 class="fw-bold mb-3">Campaign Deliverables & Requirements</h5>
-                <div class="p-3 bg-light rounded-3 text-secondary small border mb-4" style="line-height: 1.6; white-space: pre-line;">
+                <h5 class="fw-bold mb-3">Campaign Deliverables &amp; Requirements</h5>
+                <div class="p-3 bg-light rounded-3 text-secondary small border mb-4" style="line-height: 1.7; white-space: pre-line;">
                     {{ job.campaign_requirements }}
                 </div>
                 {% endif %}
 
-                <h5 class="fw-bold mb-3">Required AI Tools & Capabilities</h5>
-                <div class="mb-4">
+                <h5 class="fw-bold mb-3">Required AI Tools &amp; Capabilities</h5>
+                <div class="mb-2">
                     <div class="small text-muted mb-2">Recommended Tools / Models:</div>
-                    <div class="d-flex flex-wrap gap-2 mb-3">
+                    <div class="chip-row mb-3">
                         {% for t in job.tools_list() %}
                         <span class="badge-tool px-3 py-2 fs-6">{{ t }}</span>
                         {% else %}
@@ -62,7 +62,7 @@
                     </div>
 
                     <div class="small text-muted mb-2">Required Skills:</div>
-                    <div class="d-flex flex-wrap gap-2">
+                    <div class="chip-row">
                         {% for s in job.skills_list() %}
                         <span class="badge-skill px-3 py-2 fs-6">{{ s }}</span>
                         {% else %}
@@ -77,27 +77,27 @@
         <div class="col-lg-4">
             <div class="card p-4 border-0 shadow-sm rounded-4 bg-white mb-4">
                 <h5 class="fw-bold mb-3">Creative Specifications</h5>
-                
+
                 <ul class="list-unstyled d-flex flex-column gap-3 mb-0 small">
                     <li class="d-flex justify-content-between pb-2 border-bottom">
                         <span class="text-muted">Content Type</span>
-                        <strong class="text-dark">{{ job.content_type or 'Media' }}</strong>
+                        <strong class="text-dark text-end">{{ job.content_type or 'Media' }}</strong>
                     </li>
                     <li class="d-flex justify-content-between pb-2 border-bottom">
                         <span class="text-muted">Aspect Ratio</span>
-                        <strong class="text-dark">{{ job.aspect_ratio or '16:9' }}</strong>
+                        <strong class="text-dark text-end">{{ job.aspect_ratio or '16:9' }}</strong>
                     </li>
                     <li class="d-flex justify-content-between pb-2 border-bottom">
                         <span class="text-muted">Format</span>
-                        <strong class="text-dark">{{ job.format or 'MP4' }}</strong>
+                        <strong class="text-dark text-end">{{ job.format or 'MP4' }}</strong>
                     </li>
                     <li class="d-flex justify-content-between pb-2 border-bottom">
                         <span class="text-muted">Visual Style</span>
-                        <strong class="text-dark">{{ job.style or 'Cinematic' }}</strong>
+                        <strong class="text-dark text-end">{{ job.style or 'Cinematic' }}</strong>
                     </li>
                     <li class="d-flex justify-content-between pb-2 border-bottom">
                         <span class="text-muted">Target Specialization</span>
-                        <strong class="text-dark">{{ job.specialization or 'General AI Creative' }}</strong>
+                        <strong class="text-dark text-end">{{ job.specialization or 'General AI Creative' }}</strong>
                     </li>
                     <li class="d-flex justify-content-between">
                         <span class="text-muted">Commercial Terms</span>
@@ -114,7 +114,7 @@
                 <p class="text-secondary small mb-3">{{ job.company.industry or 'Brand & Advertising' }} &bull; {{ job.company.location or 'Global' }}</p>
                 <p class="text-secondary small mb-3">{{ job.company.description or '' }}</p>
                 {% if job.company.website %}
-                <a href="{{ job.company.website }}" target="_blank" class="btn btn-outline-secondary btn-sm w-100">
+                <a href="{{ job.company.website }}" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm w-100">
                     <i class="bi bi-box-arrow-up-right me-1"></i> Visit Company Website
                 </a>
                 {% endif %}

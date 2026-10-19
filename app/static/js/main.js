@@ -29,10 +29,12 @@ function formatErrorMessage(detail) {
 // Universal Auth Headers Helper for API calls
 function getAuthHeaders(extraHeaders = {}) {
     const headers = { ...extraHeaders };
-    const token = localStorage.getItem('access_token');
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
+    try {
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+    } catch (e) {}
     return headers;
 }
 
@@ -44,22 +46,26 @@ function showToast(message, type = 'info') {
     const formattedMessage = formatErrorMessage(message);
 
     const bgClass = type === 'success' ? 'text-bg-success' : (type === 'danger' ? 'text-bg-danger' : 'text-bg-primary');
+    const icon = type === 'success' ? 'bi-check-circle-fill' : (type === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill');
     const toastEl = document.createElement('div');
     toastEl.className = `toast align-items-center ${bgClass} border-0 show mb-2 shadow`;
     toastEl.setAttribute('role', 'alert');
     toastEl.setAttribute('aria-live', 'assertive');
     toastEl.setAttribute('aria-atomic', 'true');
-    
+
     toastEl.innerHTML = `
         <div class="d-flex">
-            <div class="toast-body fw-medium">${formattedMessage}</div>
+            <div class="toast-body fw-medium">
+                <i class="bi ${icon} me-2"></i>${formattedMessage}
+            </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     `;
 
     toastContainer.appendChild(toastEl);
     setTimeout(() => {
-        toastEl.remove();
+        toastEl.classList.remove('show');
+        setTimeout(() => toastEl.remove(), 300);
     }, 5000);
 }
 
@@ -115,3 +121,56 @@ async function handleLogout() {
     } catch (e) {}
     window.location.href = '/';
 }
+
+// ---- Progressive UI enhancements (non-functional, purely presentational) ----
+document.addEventListener('DOMContentLoaded', function () {
+    // Back-to-top button
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+        const toggle = () => {
+            if (window.scrollY > 480) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        };
+        window.addEventListener('scroll', toggle, { passive: true });
+        toggle();
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // Mobile "Filters" collapse toggle for discovery pages
+    document.querySelectorAll('[data-filter-toggle]').forEach(function (btn) {
+        const target = document.querySelector(btn.getAttribute('data-filter-toggle'));
+        if (!target) return;
+        const applyState = () => {
+            const expanded = !target.classList.contains('filter-collapsed');
+            btn.setAttribute('aria-expanded', String(expanded));
+            const icon = btn.querySelector('i');
+            if (icon) {
+                icon.className = expanded ? 'bi bi-chevron-up me-1' : 'bi bi-funnel me-1';
+            }
+        };
+        applyState();
+        btn.addEventListener('click', function () {
+            target.classList.toggle('filter-collapsed');
+            applyState();
+        });
+    });
+
+    // Close the mobile nav after navigating within the collapsed menu
+    const navContent = document.getElementById('navContent');
+    if (navContent) {
+        navContent.querySelectorAll('a.nav-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (getComputedStyle(navContent).position === 'static') return;
+                const instance = bootstrap.Collapse.getInstance(navContent);
+                if (instance && navContent.classList.contains('show')) {
+                    instance.hide();
+                }
+            });
+        });
+    }
+});

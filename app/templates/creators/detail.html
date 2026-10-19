@@ -4,7 +4,7 @@
 
 {% block content %}
 <!-- Creator Header -->
-<div class="bg-white border-bottom py-5">
+<div class="page-header py-5">
     <div class="container">
         <div class="row align-items-center gy-4">
             <div class="col-md-auto text-center text-md-start">
@@ -54,18 +54,18 @@
     </div>
 </div>
 
-<div class="container py-5">
+<div class="container py-4 py-lg-5">
     <div class="row g-4">
         <!-- Left: Bio, Tools, Workflow info -->
         <div class="col-lg-4">
             <div class="card p-4 border-0 shadow-sm rounded-4 mb-4 bg-white">
                 <h5 class="fw-bold mb-3">About Creator</h5>
-                <p class="text-secondary small mb-4" style="line-height: 1.6;">
+                <p class="text-secondary small mb-4" style="line-height: 1.7;">
                     {{ creator.bio or 'No biography provided yet.' }}
                 </p>
 
-                <h6 class="filter-group-title mb-2">Specialized AI Tools & Models</h6>
-                <div class="d-flex flex-wrap gap-1 mb-4">
+                <h6 class="filter-group-title mb-2">Specialized AI Tools &amp; Models</h6>
+                <div class="chip-row mb-4">
                     {% for tool in creator.tools_list() %}
                     <span class="badge-tool">{{ tool }}</span>
                     {% else %}
@@ -74,7 +74,7 @@
                 </div>
 
                 <h6 class="filter-group-title mb-2">Core Skills</h6>
-                <div class="d-flex flex-wrap gap-1 mb-4">
+                <div class="chip-row mb-4">
                     {% for skill in creator.skills_list() %}
                     <span class="badge-skill">{{ skill }}</span>
                     {% else %}
@@ -104,7 +104,7 @@
                 <div class="col-md-6">
                     <div class="portfolio-card h-100 d-flex flex-column">
                         <!-- Media Preview Thumbnail (SVG, Image, or Video Preview) -->
-                        <div class="position-relative overflow-hidden cursor-pointer" onclick="openMediaModal('{{ item.title }}', '{{ item.file_path }}', '{{ item.content_type }}', '{{ item.description|escape }}', '{{ item.format }}', '{{ item.aspect_ratio }}', '{{ item.tools_models }}', '{{ item.skills }}')">
+                        <div class="position-relative overflow-hidden" style="cursor: pointer;" onclick="openMediaModal('{{ item.title }}', '{{ item.file_path }}', '{{ item.content_type }}', '{{ item.description|escape }}', '{{ item.format }}', '{{ item.aspect_ratio }}', '{{ item.tools_models }}', '{{ item.skills }}')">
                             {% if item.mime_type.startswith('video') %}
                             <video class="portfolio-thumbnail" muted preload="metadata">
                                 <source src="{{ item.file_path }}" type="{{ item.mime_type }}">
@@ -113,9 +113,9 @@
                                 <i class="bi bi-play-fill fs-4 text-white"></i>
                             </span>
                             {% else %}
-                            <img src="{{ item.file_path }}" alt="{{ item.title }}" class="portfolio-thumbnail">
+                            <img src="{{ item.file_path }}" alt="{{ item.title }}" class="portfolio-thumbnail" loading="lazy">
                             {% endif %}
-                            
+
                             <span class="position-absolute top-0 start-0 m-2 badge bg-dark bg-opacity-75">
                                 {{ item.content_type }}
                             </span>
@@ -131,12 +131,10 @@
                             <p class="text-secondary small mb-3 flex-grow-1">{{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}</p>
 
                             <!-- Tools & Skills -->
-                            <div class="mb-3">
-                                <div class="d-flex flex-wrap gap-1">
-                                    {% for t in item.tools_list()[:3] %}
-                                    <span class="badge-tool" style="font-size: 0.7rem;">{{ t }}</span>
-                                    {% endfor %}
-                                </div>
+                            <div class="mb-3 chip-row">
+                                {% for t in item.tools_list()[:3] %}
+                                <span class="badge-tool" style="font-size: 0.7rem;">{{ t }}</span>
+                                {% endfor %}
                             </div>
 
                             <div class="pt-2 border-top mt-auto d-flex justify-content-between align-items-center">
@@ -151,10 +149,10 @@
                 {% endfor %}
             </div>
             {% else %}
-            <div class="card p-5 text-center border-0 shadow-sm rounded-4 bg-white">
-                <i class="bi bi-images fs-1 text-muted mb-2"></i>
+            <div class="empty-state">
+                <div class="empty-icon"><i class="bi bi-images"></i></div>
                 <h5 class="fw-bold">No portfolio works uploaded yet</h5>
-                <p class="text-secondary small">This creator has not added any generative projects yet.</p>
+                <p class="text-secondary small mb-0">This creator has not added any generative projects yet.</p>
             </div>
             {% endif %}
         </div>
@@ -163,30 +161,49 @@
 
 <!-- Engage Creator Modal -->
 <div class="modal fade" id="engageCreatorModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Select & Contact {{ creator.display_name }}</h5>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content sheet">
+            <div class="modal-header sheet-head">
+                <span class="sheet-icon tone-success"><i class="bi bi-send-check"></i></span>
+                <div class="sheet-heading">
+                    <h5 class="modal-title">Select &amp; Contact {{ creator.display_name }}</h5>
+                    <p class="sheet-sub">Send a project proposal. It lands directly in the creator's studio dashboard as an inbound proposal.</p>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="engageForm" onsubmit="handleEngagementSubmit(event)">
-                <div class="modal-body p-4">
-                    <p class="text-secondary small mb-3">
-                        Initiate project engagement. The creator will receive your proposal in their dashboard.
-                    </p>
+                <div class="modal-body">
+                    <div class="sheet-context">
+                        <img src="{{ creator.profile_image_url or 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=240' }}" alt="{{ creator.display_name }}" class="ctx-avatar">
+                        <div class="min-width-0">
+                            <div class="ctx-name">{{ creator.display_name }}</div>
+                            <div class="ctx-meta">
+                                {{ creator.specialization or 'AI Creator' }}
+                                <span class="mx-1">&bull;</span>
+                                {{ creator.location or 'Global / Remote' }}
+                                <span class="mx-1">&bull;</span>
+                                {{ creator.portfolio_items|length }} works
+                            </div>
+                        </div>
+                    </div>
                     <input type="hidden" id="engageCreatorId" value="{{ creator.id }}">
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Proposal / Message <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="engageMessage" rows="4" required placeholder="Describe your project requirements, timeline, and vision..."></textarea>
-                    </div>
+                    <div class="form-block">
+                        <div class="form-block-title">Your proposal</div>
+                        <div class="mb-3">
+                            <label class="form-label">Proposal / Message <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="engageMessage" rows="4" required placeholder="Describe your project requirements, timeline, and vision..."></textarea>
+                            <div class="form-text">Mention the campaign, deliverables and timing so the creator can respond with a quote.</div>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold">Estimated Budget (Optional)</label>
-                        <input type="text" class="form-control" id="engageBudget" placeholder="e.g. $3,000">
+                        <div class="mb-0">
+                            <label class="form-label">Estimated Budget (Optional)</label>
+                            <input type="text" class="form-control" id="engageBudget" placeholder="e.g. $3,000">
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-0">
+                <div class="modal-footer sheet-foot">
+                    <span class="foot-note"><i class="bi bi-shield-check"></i> You can agree final terms in chat</span>
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" id="engageBtn" class="btn btn-primary px-4">Send Proposal</button>
                 </div>
